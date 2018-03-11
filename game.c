@@ -7,12 +7,12 @@
 /*!
 	An entry point.
 */
-int main(char* args)
+int main(int argc, char **argv)
 {	
 	// Generate things, set titles, default values et cetera
 	initialize_app();
 	// Parse the arguments
-	parse_args(args);
+	parse_args(argc, argv);
 	// Return the chosen code
 	return app_returns;
 }
