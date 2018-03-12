@@ -55,6 +55,14 @@ void print_authors()
 }
 
 /*!
+	Print out usage options
+*/
+void print_usage()
+{
+	// TODO
+}
+
+/*!
 	Parse arguments for the Auto-Mode
 */
 void parse_args_auto_mode(int argc, char** argv)
@@ -114,6 +122,19 @@ void parse_args(int argc, char **argv)
 	{
 		case 4:
 			parse_args_auto_mode(argc, argv);
+			break;		
+			
+		case 2:	
+			// Warning #1: strcmp is case-sensitive.
+			// Warning #2: strcmp returns 0 for Matching Strings.
+			if (strcmp(argv[1], str_arg_authors) == 0)
+				print_authors();
+			else
+				print_usage();
+			break;
+			
+		default: 
+			print_usage();
 			break;
 	}
 }
