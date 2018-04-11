@@ -17,11 +17,11 @@
 /*!
 	Reads board data from a file
 */
-bool read_board(char* path, Board* board)
+bool read_board(char* path, Board* board);
 
 /*!
 	Writes board data into a file
 */
-bool write_board(char* path, const Board* board)
+bool write_board(char* path, const Board* board);
 
 #endif

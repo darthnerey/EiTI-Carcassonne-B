@@ -17,10 +17,9 @@ bool read_board(char* path, Board* board)
 	const char* file_mode_read = "rb";
 	FILE* handle;
 	
-	handle = fopen(argv[1], file_mode_read);
+	handle = fopen(path, file_mode_read);
 	if (handle == NULL) 
 	{
-		app_returns -1;
 		printf("%s'%s'", err_file_open, path);
 		return;
 	}
@@ -39,10 +38,9 @@ bool write_board(char* path, const Board* board)
 	const char* file_mode_write = "wb";
 	FILE* handle;
 	
-	handle = fopen(argv[1], file_mode_write);
+	handle = fopen(path, file_mode_write);
 	if (handle == NULL) 
 	{
-		app_returns -1;
 		printf("%s'%s'", err_file_open, path);
 		return;
 	}
