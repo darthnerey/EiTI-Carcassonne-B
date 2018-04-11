@@ -2,7 +2,7 @@
 // Let it be just be the main() with 2 calls and a ret.
 // -- Lemur
 
-#include "game_base.h"
+#include "game.h"
 
 /*!
 	An entry point.
