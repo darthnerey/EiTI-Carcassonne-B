@@ -15,6 +15,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "board.h"
+#include "file_io.h"
+#include "user_mode.h"
+
 /* =========================== */
 /* ======== Constants ======== */
 /* =========================== */
