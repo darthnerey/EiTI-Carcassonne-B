@@ -31,6 +31,8 @@ const char* str_title = "EPFU Carcassonne Project";
 
 // App's main return code
 int app_returns;
+// Currently used board
+Board current_board;
 
 /* =========================== */
 /* ======== Functions ======== */
@@ -43,6 +45,10 @@ void initialize_app()
 {
 	// Via default, we have no error.
 	app_returns = 0;	
+	
+	current_board.Width = 3;
+	current_board.Height = 3;
+	initBoard(&current_board);
 	
 	// Set the appropriate window title
 	SetConsoleTitle(str_title);
@@ -65,6 +71,18 @@ void print_usage()
 }
 
 /*!
+	Clear the screen
+*/
+void clear()
+{
+#if WINDOWS
+	system("cls");
+#elseif LINUX
+	system("clear");
+#endif
+}
+
+/*!
 	Parse arguments for the Auto-Mode
 */
 void parse_args_auto_mode(int argc, char** argv)
@@ -84,6 +102,7 @@ void parse_args_user_mode(int argc, char** argv)
 void parse_args(int argc, char **argv)	
 {
 	const char* str_arg_authors = "/authors";
+	const char* str_arg_user = "/user";
 	// Goal #1: Determine what to do (mode, it's dependent arglist)
 	// Goal #2: Call the appropriate function.
 	
@@ -100,6 +119,8 @@ void parse_args(int argc, char **argv)
 			// Warning #2: strcmp returns 0 for Matching Strings.
 			if (strcmp(argv[1], str_arg_authors) == 0)
 				print_authors();
+			else if (strcmp(argv[1], str_arg_user) == 0)
+				input_loop();
 			else
 				print_usage();
 			break;

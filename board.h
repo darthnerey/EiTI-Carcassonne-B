@@ -40,18 +40,41 @@ typedef struct Board
 	Tile Tiles[MAX_BOARD][MAX_BOARD];
 } Board;
 
+// We have already declared this in game.h
+extern Board current_board;
+
 /* =========================== */
 /* ======== Functions ======== */
 /* =========================== */
 
 /*!
+	Initialize board
+*/
+void initBoard(Board* board);
+
+/*!
 	Is the tile empty (basically, T_Nothing everywhere)
 */
 bool isTileEmpty(const Tile tile);
+
 /*!
 	Randomize the Board to be just a random set of tiles
 */
 void randomize_board(Board* board);
+
+/*!
+	Calculate the total points, obtainable from the provided board
+*/
 int getBoardPoints(const Board* board);
+
+/*!
+	Rotate a tile clockwise
+*/
+void rotateTileCW(Tile* tile);
+
+/*!
+	Rotate a tile counter-clockwise
+*/
+void rotateTileCCW(Tile* tile);
 
 #endif

@@ -17,4 +17,9 @@
 */
 void process_input();
 
+/*!
+	Enter an input processing loop
+*/
+void input_loop();
+
 #endif
