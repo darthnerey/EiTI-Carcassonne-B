@@ -19,19 +19,23 @@ void draw_tile(const Board* board, int x, int y)
 	);
 	printf(" %c \n", board->Tiles[x][y].Bottom);
 }
-	
-void draw_tiles(const Board* board)
+
+int max(int a, int b) { return a > b ? a : b; }
+int min(int a, int b) { return a > b ? b : a; }
+
+void draw_tiles(const Board* board, int x, int y, int r)
 {
-	int x, y = 0;
+	int minX = max(0, x - r), maxX = min(MAX_BOARD - 1, x + r);
+	int minY = max(0, y - r), maxY = min(MAX_BOARD - 1, y + r);
 	
-	for (; y < board->Height; y++)
+	for (y = minY; y <= maxY; y++)
 	{
 		// Scan-line 0
-		for (x = 0; x < board->Width; x++)
+		for (x = minX; x <= maxX; x++)
 			printf(" %c ", board->Tiles[x][y].Top);
 		printf("\n");
 		// Scan-line 1
-		for (x = 0; x < board->Width; x++)
+		for (x = minX; x <= maxX; x++)
 		{
 			printf("%c%c%c", 
 				board->Tiles[x][y].Left, 
@@ -41,7 +45,7 @@ void draw_tiles(const Board* board)
 		}
 		printf("\n");
 		// Scan-line 2		
-		for (x = 0; x < board->Width; x++)
+		for (x = minX; x <= maxX; x++)
 			printf(" %c ", board->Tiles[x][y].Bottom);
 		printf("\n");
 	}

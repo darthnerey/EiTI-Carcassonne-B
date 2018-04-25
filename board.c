@@ -35,11 +35,6 @@ bool isTileEmpty(const Tile tile)
 
 int getBoardPoints(const Board* board)
 {
-	int x, y;
-	
-	for (x = 0; x < board->Width; x++)
-	{
-	}
 }
 
 void randomize_board(Board* board)
@@ -71,4 +66,18 @@ void rotateTileCCW(Tile* tile)
 	tile->Left = t;
 	tile->Bottom = l;
 	tile->Right = b;
+}
+
+void flipTileH(Tile* tile)
+{
+	T_Part X = tile->Left;
+	tile->Left = tile->Right;
+	tile->Right = X;
+}
+
+void flipTileV(Tile* tile)
+{
+	T_Part X = tile->Top;
+	tile->Top = tile->Bottom;
+	tile->Bottom = X;
 }

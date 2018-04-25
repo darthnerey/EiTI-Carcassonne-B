@@ -46,8 +46,8 @@ void initialize_app()
 	// Via default, we have no error.
 	app_returns = 0;	
 	
-	current_board.Width = 3;
-	current_board.Height = 3;
+	current_board.Width = MAX_BOARD;
+	current_board.Height = MAX_BOARD;
 	initBoard(&current_board);
 	
 	// Set the appropriate window title
@@ -94,6 +94,7 @@ void parse_args_auto_mode(int argc, char** argv)
 */
 void parse_args_user_mode(int argc, char** argv)
 {
+	
 }
 
 /*!

@@ -9,6 +9,7 @@
 /* =========================== */
 
 #define MAX_BOARD 128
+#define MID_BOARD (MAX_BOARD / 2)
 
 /* =========================== */
 /* ======== Structures ======= */
@@ -76,5 +77,15 @@ void rotateTileCW(Tile* tile);
 	Rotate a tile counter-clockwise
 */
 void rotateTileCCW(Tile* tile);
+
+/*!
+	Horizontally flips the tile
+*/
+void flipTileH(Tile* tile);
+
+/*!
+	Vertically flips the tile
+*/
+void flipTileV(Tile* tile);
 
 #endif
