@@ -1,28 +1,22 @@
-// Dump your includes and other stuff here, under <windows.h>
-// Otherwise, keep this file clean, neat and utility-only.
-// -- Lemur
-
 #pragma once
-#ifndef _BASE_H
-#define _BASE_H 1
+#ifndef _GAME_H
+#define _GAME_H 1
 
 /* =========================== */
 /* ======== Includes  ======== */
 /* =========================== */
-#include <windows.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
 
-#include "board.h"
-#include "file_io.h"
-#include "user_mode.h"
+#include "Utils.h"
+#include "Board.h"
+#include "File_IO.h"
+#include "Tile_Pool.h"
+#include "User_Mode.h"
 
 /* =========================== */
 /* ======== Constants ======== */
 /* =========================== */
-const char* str_authors = "Leonid Sawin, Mazen Ibrahim, Vlad Podar, Lukasz Glowka, Maciek Zadlo";
+
+const char* str_authors = "Leonid Sawin and Mazen Ibrahim";
 const char* str_title = "EPFU Carcassonne Project";
 
 /* =========================== */
@@ -33,29 +27,31 @@ const char* str_title = "EPFU Carcassonne Project";
 int app_returns;
 // Currently used board
 Board current_board;
+// Currently used tile pool
+TilePool* current_tile_pool;
 
 /* =========================== */
 /* ======== Functions ======== */
 /* =========================== */
 
 /*!
-	Initialize everything before we start
+Initialize everything before we start
 */
 void initialize_app()
 {
 	// Via default, we have no error.
-	app_returns = 0;	
-	
-	current_board.Width = MAX_BOARD;
-	current_board.Height = MAX_BOARD;
+	app_returns = 0;
+
+	// Initialize the current board
 	initBoard(&current_board);
-	
+	current_tile_pool = NULL;
+
 	// Set the appropriate window title
 	SetConsoleTitle(str_title);
 }
 
 /*!
-	Print out the list of authors
+Print out the list of authors
 */
 void print_authors()
 {
@@ -63,15 +59,16 @@ void print_authors()
 }
 
 /*!
-	Print out usage options
+Print out the usage
 */
-void print_usage()
+void print_usage(char* exename)
 {
-	// TODO
+	printf("Usage: %s [tile_pool] [tile_board]\n", exename);
+	printf("Usage: %s /user\n", exename);
 }
 
 /*!
-	Clear the screen
+Clear the screen
 */
 void clear()
 {
@@ -83,52 +80,48 @@ void clear()
 }
 
 /*!
-	Parse arguments for the Auto-Mode
+Parse arguments for the Auto-Mode
 */
 void parse_args_auto_mode(int argc, char** argv)
 {
 }
 
 /*!
-	Parse arguments for the User-Mode
+Parse arguments for the User-Mode
 */
 void parse_args_user_mode(int argc, char** argv)
 {
-	
+	current_tile_pool = read_tile_pool(argv[1]);
+	init_user_mode();
 }
 
 /*!
-	Parse the input arguments
+Parse the input arguments
 */
-void parse_args(int argc, char **argv)	
+void parse_args(int argc, char **argv)
 {
 	const char* str_arg_authors = "/authors";
 	const char* str_arg_user = "/user";
-	// Goal #1: Determine what to do (mode, it's dependent arglist)
-	// Goal #2: Call the appropriate function.
-	
+
 	switch (argc)
 	{
-		case 4:
-			parse_args_auto_mode(argc, argv);
-			break;		
-		case 3:
+	case 3:
+		parse_args_auto_mode(argc, argv);
+		break;
+	case 2:
+		// Warning #1: strcmp is case-sensitive.
+		// Warning #2: strcmp returns 0 for Matching Strings.
+		if (strcmp(argv[1], str_arg_authors) == 0)
+			print_authors();
+		else if (strcmp(argv[1], str_arg_user) == 0)
+			init_user_mode();
+		else
 			parse_args_user_mode(argc, argv);
-			break;
-		case 2:	
-			// Warning #1: strcmp is case-sensitive.
-			// Warning #2: strcmp returns 0 for Matching Strings.
-			if (strcmp(argv[1], str_arg_authors) == 0)
-				print_authors();
-			else if (strcmp(argv[1], str_arg_user) == 0)
-				input_loop();
-			else
-				print_usage();
-			break;
-			
-		default: 
-			print_usage();
-			break;
+		break;
+
+	default:
+		print_usage(argv[0]);
+		break;
 	}
 }
 

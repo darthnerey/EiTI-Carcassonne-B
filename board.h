@@ -2,90 +2,50 @@
 #ifndef _BOARD_H
 #define _BOARD_H 1
 
-#include <stdbool.h>
-
 /* =========================== */
-/* ======== Constants ======== */
+/* ======== Includes  ======== */
 /* =========================== */
 
-#define MAX_BOARD 128
-#define MID_BOARD (MAX_BOARD / 2)
+#include "Tile.h"
+#include "Utils.h"
 
 /* =========================== */
 /* ======== Structures ======= */
 /* =========================== */
 
-typedef enum T_Part
-{
-	T_Field = 'f',
-	T_Road = 'r',
-	T_Temple = 't',
-	T_City = 'c',
-	T_Shield = '*',
-	T_Nothing = '_'
-} T_Part;
-
-typedef struct Tile
-{
-	T_Part Top;
-	T_Part Bottom;
-	T_Part Left;
-	T_Part Right;
-	T_Part Middle;
-} Tile;
+typedef TileRef* TileRow;
+typedef TileRow* TileRows;
 
 typedef struct Board
 {
-	int Width;
-	int Height;
-	Tile Tiles[MAX_BOARD][MAX_BOARD];
+	Rect2 Bounds;
+	int32_t Score;
+	TileRows Rows;
 } Board;
 
-// We have already declared this in game.h
 extern Board current_board;
 
 /* =========================== */
 /* ======== Functions ======== */
 /* =========================== */
 
-/*!
-	Initialize board
-*/
 void initBoard(Board* board);
+void freeBoard(Board* board);
+void emptyBoard(Board* board);
+void allocBoard(Board* board, Size2 size);
 
-/*!
-	Is the tile empty (basically, T_Nothing everywhere)
-*/
-bool isTileEmpty(const Tile tile);
+int32_t getBoardWidth(const Board* board);
+int32_t getBoardHeight(const Board* board);
+int32_t calculateScore(const Board* board);
 
-/*!
-	Randomize the Board to be just a random set of tiles
-*/
-void randomize_board(Board* board);
+Size2 getBoardSize(const Board* board);
 
-/*!
-	Calculate the total points, obtainable from the provided board
-*/
-int getBoardPoints(const Board* board);
+TileRef assertTile(Board* board, const Point2 tile);
 
-/*!
-	Rotate a tile clockwise
-*/
-void rotateTileCW(Tile* tile);
+bool isBoardValid(const Board* board);
+bool isTilePresent(const Board* board, const Point2 pos);
 
-/*!
-	Rotate a tile counter-clockwise
-*/
-void rotateTileCCW(Tile* tile);
-
-/*!
-	Horizontally flips the tile
-*/
-void flipTileH(Tile* tile);
-
-/*!
-	Vertically flips the tile
-*/
-void flipTileV(Tile* tile);
+bool setTile(Board* board, const Point2 pos, const TileRef tile);
+TileRef getTile(const Board* board, const Point2 pos);
 
 #endif

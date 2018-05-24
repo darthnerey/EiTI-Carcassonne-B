@@ -2,20 +2,17 @@
 #ifndef _DRAWING_H
 #define _DRAWING_H 1
 
-#include "board.h"
+/* =========================== */
+/* ======== Includes  ======== */
+/* =========================== */
+
+#include "Board.h"
 
 /* =========================== */
 /* ======== Functions ======== */
 /* =========================== */
-	
-/*!
-	Draw tiles around (x, y) in "radius" r
-*/
-void draw_tiles(const Board* board, int x, int y, int r);
 
-/*!
-	Draw a tile at (x, y)
-*/
-void draw_tile(const Board* board, int x, int y);
+void draw_tile(const Board* board, const Point2 position);
+void draw_tiles(const Board* board, Rect2 view);
 
 #endif

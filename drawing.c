@@ -4,49 +4,73 @@
 
 #include "drawing.h"
 #include "board.h"
+#include "utils.h"
 
 /* =========================== */
 /* ======== Functions ======== */
 /* =========================== */
-	
-void draw_tile(const Board* board, int x, int y)
+
+void draw_tile(const Board* board, const Point2 position)
 {
-	printf(" %c \n", board->Tiles[x][y].Top);
-	printf("%c%c%c\n", 
-		board->Tiles[x][y].Left, 
-		board->Tiles[x][y].Middle, 
-		board->Tiles[x][y].Right
-	);
-	printf(" %c \n", board->Tiles[x][y].Bottom);
+	TileRef tile = getTile(board, position);
+	if (tile == NULL) 
+		printf("___\n___\n___");
+	else 
+	{
+		printf(" %c \n", tile->Top);
+		printf("%c%c%c\n",
+			tile->Left,
+			tile->Middle,
+			tile->Right
+		);
+		printf(" %c \n", tile->Bottom);
+	}
 }
 
-int max(int a, int b) { return a > b ? a : b; }
-int min(int a, int b) { return a > b ? b : a; }
-
-void draw_tiles(const Board* board, int x, int y, int r)
+void draw_tiles(const Board* board, Rect2 view)
 {
-	int minX = max(0, x - r), maxX = min(MAX_BOARD - 1, x + r);
-	int minY = max(0, y - r), maxY = min(MAX_BOARD - 1, y + r);
-	
-	for (y = minY; y <= maxY; y++)
+	TileRef tile;
+	Point2 pos;
+
+	view = Intersect(view, board->Bounds);
+
+	for (pos.Y = view.Min.Y; pos.Y < view.Max.Y; pos.Y++)
 	{
 		// Scan-line 0
-		for (x = minX; x <= maxX; x++)
-			printf(" %c ", board->Tiles[x][y].Top);
+		for (pos.X = view.Min.X; pos.X < view.Max.X; pos.X++)
+		{
+			tile = getTile(board, pos);
+			if (tile == NULL)
+				printf("\t");
+			else
+				printf(" %c ", tile->Top);
+		}
 		printf("\n");
 		// Scan-line 1
-		for (x = minX; x <= maxX; x++)
+		for (pos.X = view.Min.X; pos.X < view.Max.X; pos.X++)
 		{
-			printf("%c%c%c", 
-				board->Tiles[x][y].Left, 
-				board->Tiles[x][y].Middle, 
-				board->Tiles[x][y].Right
-			);
+			tile = getTile(board, pos);
+			if (tile == NULL)
+				printf("\t");
+			else 
+			{
+				printf("%c%c%c",
+					tile->Left,
+					tile->Middle,
+					tile->Right
+				);
+			}
 		}
 		printf("\n");
 		// Scan-line 2		
-		for (x = minX; x <= maxX; x++)
-			printf(" %c ", board->Tiles[x][y].Bottom);
+		for (pos.X = view.Min.X; pos.X < view.Max.X; pos.X++)
+		{
+			tile = getTile(board, pos);
+			if (tile == NULL)
+				printf("\t");
+			else
+				printf(" %c ", tile->Bottom);
+		}
 		printf("\n");
 	}
 }

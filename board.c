@@ -1,83 +1,126 @@
-/* =========================== */
-/* ======== Includes  ======== */
-/* =========================== */
-
-#include "board.h"
-
-/* =========================== */
-/* ======== Functions ======== */
-/* =========================== */
+#include "Board.h"
 
 void initBoard(Board* board)
 {
-	int x, y;
-	for (y = 0; y < board->Height; y++)
+	board->Bounds.Max.X = 0;
+	board->Bounds.Max.Y = 0;
+	board->Bounds.Min.X = 0;
+	board->Bounds.Min.Y = 0;
+	board->Rows = NULL;
+	board->Score = 0;
+}
+
+void freeBoard(Board* board)
+{
+	Size2 size = getBoardSize(board);
+	for (int32_t Y = 0; Y < size.Height; Y++)
 	{
-		for (x = 0; x < board->Width; x++)
+		for (int32_t X = 0; X < size.Width; X++)
+			freeTile(board->Rows[Y][X]);
+		free(board->Rows[Y]);
+	}
+	free(board->Rows);
+	board->Rows = NULL;
+}
+
+void emptyBoard(Board* board)
+{
+	Size2 size = getBoardSize(board);
+	for (int32_t Y = 0; Y < size.Height; Y++)
+	{
+		for (int32_t X = 0; X < size.Width; X++) 
 		{
-			board->Tiles[x][y].Top = T_Nothing;
-			board->Tiles[x][y].Bottom = T_Nothing;
-			board->Tiles[x][y].Left = T_Nothing;
-			board->Tiles[x][y].Middle = T_Nothing;
-			board->Tiles[x][y].Right = T_Nothing;
+			freeTile(board->Rows[Y][X]);
+			board->Rows[Y][X] = NULL;
 		}
 	}
 }
 
-bool isTileEmpty(const Tile tile)
+void allocBoard(Board* board, Size2 size)
 {
-	return tile.Top == T_Nothing
-		&& tile.Bottom == T_Nothing
-		&& tile.Left == T_Nothing
-		&& tile.Right == T_Nothing
-		&& tile.Middle == T_Nothing;
+	// Because we don't wanna leak
+	if (board->Rows != NULL)
+		freeBoard(board);
+	board->Bounds.Max.X = size.Width;
+	board->Bounds.Max.Y = size.Height;
+	board->Rows = (TileRows)malloc(sizeof(TileRows) * size.Height);
+	for (int32_t Y = 0; Y < size.Height; Y++)
+	{
+		board->Rows[Y] = (TileRow)malloc(sizeof(TileRow) * size.Width);
+		for (int32_t X = 0; X < size.Width; X++)
+			board->Rows[Y][X] = NULL;
+	}
 }
 
-int getBoardPoints(const Board* board)
+int32_t getBoardWidth(const Board* board)
 {
+	return Rect2Width(board->Bounds);
 }
 
-void randomize_board(Board* board)
+int32_t getBoardHeight(const Board* board)
 {
-	
+	return Rect2Height(board->Bounds);
 }
 
-void rotateTileCW(Tile* tile)
+int32_t calculateScore(const Board* board)
 {
-	T_Part t, b, r, l;
-	t = tile->Top;	
-	b = tile->Bottom;	
-	r = tile->Right;
-	l = tile->Left;	
-	tile->Top = l;
-	tile->Right = t;
-	tile->Bottom = r;
-	tile->Left = b;
+	return -1;
 }
 
-void rotateTileCCW(Tile* tile)
+Size2 getBoardSize(const Board * board)
 {
-	T_Part t, b, r, l;
-	t = tile->Top;	
-	b = tile->Bottom;	
-	r = tile->Right;
-	l = tile->Left;	
-	tile->Top = r;
-	tile->Left = t;
-	tile->Bottom = l;
-	tile->Right = b;
+	Size2 result;
+	result.Width = getBoardWidth(board);
+	result.Height = getBoardHeight(board);
+	return result;
 }
 
-void flipTileH(Tile* tile)
+TileRef assertTile(Board* board, const Point2 tile)
 {
-	T_Part X = tile->Left;
-	tile->Left = tile->Right;
-	tile->Right = X;
+	if (board->Rows[tile.Y][tile.X] == NULL) 
+	{
+		TileRef result = allocTile();
+		result->Top = T_Field;
+		result->Left = T_Field;
+		result->Right = T_Field;
+		result->Middle = T_Field;
+		result->Bottom = T_Field;
+		board->Rows[tile.Y][tile.X] = result;
+		return result;
+	}
+	return board->Rows[tile.Y][tile.X];
 }
 
-void flipTileV(Tile* tile)
+bool isBoardValid(const Board* board)
 {
-	T_Part X = tile->Top;
-	tile->Top = tile->Bottom;
-	tile->Bottom = X;
+	return board->Rows != NULL
+		&& board->Score >= 0;
+}
+
+bool isTilePresent(const Board* board, const Point2 pos)
+{
+	if (Contains(board->Bounds, pos))
+	{
+		return board->Rows[pos.Y][pos.X] != NULL;
+	}
+	return false;
+}
+
+bool setTile(Board* board, const Point2 pos, const TileRef tile)
+{
+	if (Contains(board->Bounds, pos))
+	{
+		board->Rows[pos.Y][pos.X] = tile;
+		return true;
+	}
+	else return false;
+}
+
+TileRef getTile(const Board* board, const Point2 pos)
+{
+	if (Contains(board->Bounds, pos))
+	{
+		return board->Rows[pos.Y][pos.X];
+	}
+	return NULL;
 }
