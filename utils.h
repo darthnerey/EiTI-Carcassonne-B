@@ -1,56 +1,52 @@
 #pragma once
-#ifndef _UTILS_H
-#define _UTILS_H 1
-
-/* =========================== */
-/* ======== Includes  ======== */
-/* =========================== */
-
-#include <Windows.h>
+#ifndef UTILS_H
+#define UTILS_H
 #include <stdbool.h>
-#include <string.h>
 #include <stdint.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
+#include <math.h>
+#include <time.h>
 
-/* =========================== */
-/* ======== Structures ======= */
-/* =========================== */
-
-typedef struct Point2
+typedef struct Point
 {
 	int32_t X;
 	int32_t Y;
-} Point2;
+} Point;
 
-typedef struct Rect2
+typedef struct Size
 {
-	Point2 Min;
-	Point2 Max;
-} Rect2;
+	int32_t W;
+	int32_t H;
+} Size;
 
-typedef struct Size2
+typedef struct Rectangle
 {
-	int32_t Width;
-	int32_t Height;
-} Size2;
+	Point Min;
+	Point Max;
+} Rectangle;
 
-/* =========================== */
-/* ======== Functions ======== */
-/* =========================== */
+void ClearScreen(void);
 
-int32_t Rect2Width(Rect2 R);
-int32_t Rect2Height(Rect2 R);
-int32_t Max(int32_t A, int32_t B);
-int32_t Min(int32_t A, int32_t B);
-Rect2 Intersect(Rect2 A, Rect2 B);
-Rect2 Contain(Rect2 R, Point2 P);
-Size2 Rect2Size(Rect2 R);
-bool Contains(Rect2 R, Point2 P);
-bool Rect2Equals(Rect2 A, Rect2 B);
-bool Point2Equals(Point2 A, Point2 B);
+Rectangle CreateRectangle(const Size s);
+Rectangle MarginRectangle(const Rectangle r, const uint32_t m);
 
-void ClearConsole();
-void LowerCase(char* str, int32_t len);
+bool ContainsPoint(const Rectangle r, const Point p);
 
+Point RandomPosition(const Rectangle within);
+
+Size RectangleSize(const Rectangle r);
+
+int32_t RectangleWidth(const Rectangle r);
+int32_t RectangleHeight(const Rectangle r);
+
+int32_t Abs(int32_t x);
+int32_t Max(int32_t a, int32_t b);
+int32_t Min(int32_t a, int32_t b);
+int32_t Random(int32_t min, int32_t max);
+
+int32_t IndexOf(const char chr, const char* str);
+int32_t IndexOfAny(const char* str, const char* chars);
 #endif

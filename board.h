@@ -1,51 +1,43 @@
 #pragma once
-#ifndef _BOARD_H
-#define _BOARD_H 1
+#ifndef BOARD_H
+#define BOARD_H
 
-/* =========================== */
-/* ======== Includes  ======== */
-/* =========================== */
-
-#include "Tile.h"
 #include "Utils.h"
-
-/* =========================== */
-/* ======== Structures ======= */
-/* =========================== */
-
-typedef TileRef* TileRow;
-typedef TileRow* TileRows;
+#include "Tile.h"
+#include "TilePool.h"
 
 typedef struct Board
 {
-	Rect2 Bounds;
+	Size Size;
 	int32_t Score;
-	TileRows Rows;
+	TileRef** Tiles;
 } Board;
 
-extern Board current_board;
+typedef Board* BoardRef;
 
-/* =========================== */
-/* ======== Functions ======== */
-/* =========================== */
+BoardRef AllocBoard(const Size size);
 
-void initBoard(Board* board);
-void freeBoard(Board* board);
-void emptyBoard(Board* board);
-void allocBoard(Board* board, Size2 size);
+Size GetBoardSize(const BoardRef board);
+Point GetBoardMaxTile(const BoardRef board);
+Point GetBoardMinTile(const BoardRef board);
+Rectangle GetBoardBounds(const BoardRef board);
 
-int32_t getBoardWidth(const Board* board);
-int32_t getBoardHeight(const Board* board);
-int32_t calculateScore(const Board* board);
+int32_t GetBoardWidth(const BoardRef board);
+int32_t GetBoardHeight(const BoardRef board);
 
-Size2 getBoardSize(const Board* board);
+TileRef GetTile(const BoardRef board, const Point at);
 
-TileRef assertTile(Board* board, const Point2 tile);
-
-bool isBoardValid(const Board* board);
-bool isTilePresent(const Board* board, const Point2 pos);
-
-bool setTile(Board* board, const Point2 pos, const TileRef tile);
-TileRef getTile(const Board* board, const Point2 pos);
-
+bool FreeBoard(BoardRef* board);
+bool TileExists(BoardRef board, const Point at);
+bool TryRemoveTile(BoardRef board, const Point at);
+bool ShiftBoard(BoardRef board, const Point shift);
+bool ShiftBoardX(BoardRef board, const int32_t x);
+bool ShiftBoardY(BoardRef board, const int32_t y);
+bool StretchBoard(BoardRef board, const Size size);
+bool AssertBoardSize(BoardRef board, const Point fits);
+bool StretchBoardW(BoardRef board, const int32_t width);
+bool StretchBoardH(BoardRef board, const int32_t height);
+bool TrySetTile(BoardRef board, const TileRef tile, const Point at);
+bool CanSetTile(BoardRef board, const TileRef tile, const Point at);
+bool TryPlaceTile(BoardRef board, const TileRef tile, const Point at);
 #endif

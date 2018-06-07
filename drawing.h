@@ -1,18 +1,12 @@
 #pragma once
-#ifndef _DRAWING_H
-#define _DRAWING_H 1
+#ifndef DRAWING_H
+#define DRAWING_H
 
-/* =========================== */
-/* ======== Includes  ======== */
-/* =========================== */
-
+#include "TilePool.h"
 #include "Board.h"
+#include "Tile.h"
 
-/* =========================== */
-/* ======== Functions ======== */
-/* =========================== */
-
-void draw_tile(const Board* board, const Point2 position);
-void draw_tiles(const Board* board, Rect2 view);
-
+bool PrintListFile(const ListRef list);
+bool PrintBoardFile(const BoardRef board);
+bool PrintBoardGrid(const BoardRef board);
 #endif

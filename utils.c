@@ -1,88 +1,107 @@
 #include "Utils.h"
 
-int32_t Rect2Width(Rect2 R)
+void ClearScreen(void)
 {
-	return R.Max.X - R.Min.X;
-}
-
-int32_t Rect2Height(Rect2 R)
-{
-	return R.Max.Y - R.Min.Y;
-}
-
-int32_t Max(int32_t A, int32_t B)
-{
-	return A > B ? A : B;
-}
-
-int32_t Min(int32_t A, int32_t B)
-{
-	return A > B ? B : A;
-}
-
-Rect2 Intersect(Rect2 A, Rect2 B)
-{
-	Rect2 C;
-	C.Max.X = Min(A.Max.X, B.Max.X);
-	C.Max.Y = Min(A.Max.Y, B.Max.Y);
-	C.Min.X = Max(A.Min.X, B.Min.X);
-	C.Min.Y = Max(A.Min.Y, B.Min.Y);
-	return C;
-}
-
-Rect2 Contain(Rect2 R, Point2 P)
-{
-	if (P.X > R.Max.X)
-		R.Max.X = P.X;
-	if (P.Y > R.Max.Y)
-		R.Max.Y = P.Y;
-	if (P.X < R.Min.X)
-		R.Min.X = P.X;
-	if (P.Y < R.Min.Y)
-		R.Min.Y = P.Y;
-	return R;
-}
-
-Size2 Rect2Size(Rect2 R)
-{
-	Size2 S;
-	S.Width = Rect2Width(R);
-	S.Height = Rect2Height(R);
-	return S;
-}
-
-bool Contains(Rect2 R, Point2 P)
-{
-	return R.Min.X <= P.X
-		&& R.Max.X >= P.X
-		&& R.Min.Y <= P.Y
-		&& R.Max.Y >= P.Y;
-}
-
-bool Rect2Equals(Rect2 A, Rect2 B)
-{
-	return Point2Equals(A.Min, B.Min) 
-		&& Point2Equals(A.Max, B.Max);
-}
-
-bool Point2Equals(Point2 A, Point2 B)
-{
-	return A.X == B.X
-		&& A.Y == B.Y;
-}
-
-void ClearConsole()
-{
-#if WINDOWS
-	system("cls");
-#elseif LINUX
+#if LINUX
 	system("clear");
+#else
+	system("cls");
 #endif
 }
 
-void LowerCase(char* str, int32_t len)
+Rectangle CreateRectangle(const Size s)
 {
-	for (--len; len >= 0; len--) 
-		str[len] = tolower(str[len]);
+	Rectangle result;
+	result.Max.X = s.W;
+	result.Max.Y = s.H;
+	result.Min.X = 0;
+	result.Min.Y = 0;
+	return result;
 }
 
+Rectangle MarginRectangle(const Rectangle r, const uint32_t m)
+{
+	Rectangle result;
+	result.Min.X = r.Min.X - m;
+	result.Min.Y = r.Min.Y - m;
+	result.Max.X = r.Max.X + m;
+	result.Max.Y = r.Max.Y + m;
+	return result;
+}
+
+bool ContainsPoint(const Rectangle r, const Point p)
+{
+	return r.Max.X >= p.X
+		&& r.Min.X <= p.X
+		&& r.Max.Y >= p.Y
+		&& r.Min.Y <= p.Y;
+}
+
+Point RandomPosition(const Rectangle within)
+{
+	Point result;
+	result.X = Random(within.Min.X, within.Max.X + 1);
+	result.Y = Random(within.Min.Y, within.Max.Y + 1);
+	return result;
+}
+
+Size RectangleSize(const Rectangle r)
+{
+	Size result;
+	result.W = r.Max.X - r.Min.X;
+	result.H = r.Max.Y - r.Min.Y;
+	return result;
+}
+
+int32_t RectangleWidth(const Rectangle r)
+{
+	return r.Max.X - r.Min.X;
+}
+
+int32_t RectangleHeight(const Rectangle r)
+{
+	return r.Max.Y - r.Min.Y;
+}
+
+int32_t Abs(int32_t x)
+{
+	return x > 0 ? x : -x;
+}
+
+int32_t Max(int32_t a, int32_t b)
+{
+	return a > b ? a : b;
+}
+
+int32_t Min(int32_t a, int32_t b)
+{
+	return a > b ? b : a;
+}
+
+int32_t Random(int32_t min, int32_t max)
+{
+	int32_t range = max - min;
+	return rand() % range + min;
+}
+
+int32_t IndexOf(const char chr, const char* str)
+{
+	int32_t i = 0, length = strlen(str);
+	for (; i < length; i++)
+	{
+		if (str[i] == chr)
+			return i;
+	}
+	return -1;
+}
+
+int32_t IndexOfAny(const char* str, const char* chars)
+{
+	int32_t i = 0, j, length = strlen(chars);
+	for (; i < length; i++)
+	{
+		j = IndexOf(chars[i], str);
+		if (j > -1) return j;
+	}
+	return -1;
+}

@@ -1,50 +1,50 @@
 #pragma once
-#ifndef _TILE_H
-#define _TILE_H 1
-
-/* =========================== */
-/* ======== Includes  ======== */
-/* =========================== */
-
+#ifndef TILE_H
+#define TILE_H
 #include "Utils.h"
 
-/* =========================== */
-/* ======== Structures ======= */
-/* =========================== */
+#define TileParts 5
+#define TileSides 4
+#define TileSymbols "cfrt*_"
 
-typedef enum T_Part
+typedef enum TilePart
 {
-	T_Field = 'f',
-	T_Road = 'r',
-	T_Temple = 't',
-	T_City = 'c',
-	T_Shield = '*',
-	T_Nothing = '_'
-} T_Part;
+	City = 'c',
+	Road = 'r',
+	Field = 'f',
+	Temple = 't',
+	Shield = '*',
+	Nothing = '_'
+} TilePart;
 
-typedef struct Tile
+typedef union Tile
 {
-	T_Part Top;
-	T_Part Bottom;
-	T_Part Left;
-	T_Part Right;
-	T_Part Middle;
+	TilePart Parts[TileParts];
+	struct {
+		TilePart Top;
+		TilePart Right;
+		TilePart Bottom;
+		TilePart Left;
+		TilePart Middle;
+	};
 } Tile;
+
 typedef Tile* TileRef;
 
-/* =========================== */
-/* ======== Functions ======== */
-/* =========================== */
+TileRef AllocTile(void);
+TileRef AllocRandomTile(void);
+TileRef TileFromString(const char* str);
 
-TileRef allocTile(void);
+char* TileToString(const TileRef tile);
 
-void freeTile(TileRef tile);
-void flipTileV(TileRef tile);
-void flipTileH(TileRef tile);
-void rotateTileCW(TileRef tile);
-void rotateTileCCW(TileRef tile);
+bool FreeTile(TileRef* tile);
+bool FlipTileV(TileRef tile);
+bool FlipTileH(TileRef tile);
+bool RotateTileCW(TileRef tile);
+bool RotateTileCCW(TileRef tile);
+bool RandomizeTile(TileRef tile);
+bool IsTileValid(const TileRef tile);
+bool TileEqualsString(const TileRef tile, const char* string);
 
-bool isTileValid(TileRef tile);
-bool isTileLegal(TileRef tile);
-
+TileRef** AllocTiles(const Size size);
 #endif

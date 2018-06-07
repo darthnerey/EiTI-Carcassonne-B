@@ -1,76 +1,103 @@
-/* =========================== */
-/* ======== Includes  ======== */
-/* =========================== */
+#include "Drawing.h"
 
-#include "drawing.h"
-#include "board.h"
-#include "utils.h"
-
-/* =========================== */
-/* ======== Functions ======== */
-/* =========================== */
-
-void draw_tile(const Board* board, const Point2 position)
+bool PrintListFile(const ListRef list)
 {
-	TileRef tile = getTile(board, position);
-	if (tile == NULL) 
-		printf("___\n___\n___");
-	else 
+	if (list == NULL)
+		return false;
+
+	ListRef node = FirstInList(list);
+
+	do
 	{
-		printf(" %c \n", tile->Top);
-		printf("%c%c%c\n",
-			tile->Left,
-			tile->Middle,
-			tile->Right
-		);
-		printf(" %c \n", tile->Bottom);
-	}
+		TileRef Tile = node->Tile;
+		for (int32_t Z = 0; Z < TileParts; Z++) {
+			printf("%c", Tile->Parts[Z]);
+		}
+		node = node->Next;
+		printf("\n");
+	} while (node != NULL);
+
+	return true;
 }
 
-void draw_tiles(const Board* board, Rect2 view)
+bool PrintBoardFile(const BoardRef board)
 {
-	TileRef tile;
-	Point2 pos;
-
-	view = Intersect(view, board->Bounds);
-
-	for (pos.Y = view.Min.Y; pos.Y < view.Max.Y; pos.Y++)
+	if (board == NULL)
+		return false;
+	if (board->Tiles == NULL)
+		return false;
+	
+	Point point;
+	Size size = GetBoardSize(board);
+	for (point.Y = 0; point.Y < size.H; point.Y++)
 	{
-		// Scan-line 0
-		for (pos.X = view.Min.X; pos.X < view.Max.X; pos.X++)
+		for (point.X = 0; point.X < size.W; point.X++)
 		{
-			tile = getTile(board, pos);
-			if (tile == NULL)
-				printf("\t");
-			else
-				printf(" %c ", tile->Top);
-		}
-		printf("\n");
-		// Scan-line 1
-		for (pos.X = view.Min.X; pos.X < view.Max.X; pos.X++)
-		{
-			tile = getTile(board, pos);
-			if (tile == NULL)
-				printf("\t");
-			else 
+			TileRef Tile = GetTile(board, point);
+			if (Tile == NULL)
 			{
-				printf("%c%c%c",
-					tile->Left,
-					tile->Middle,
-					tile->Right
-				);
+				for (int32_t Z = 0; Z < TileParts; Z++) {
+					printf("#");
+				}
 			}
-		}
-		printf("\n");
-		// Scan-line 2		
-		for (pos.X = view.Min.X; pos.X < view.Max.X; pos.X++)
-		{
-			tile = getTile(board, pos);
-			if (tile == NULL)
-				printf("\t");
 			else
-				printf(" %c ", tile->Bottom);
+			{
+				for (int32_t Z = 0; Z < TileParts; Z++) {
+					printf("%c", Tile->Parts[Z]);
+				}
+			}
+			if (point.X + 1 < size.W) printf(" ");
 		}
 		printf("\n");
 	}
+
+	return true;
+}
+
+bool PrintBoardGrid(const BoardRef board)
+{
+	if (board == NULL)
+		return false;
+	if (board->Tiles == NULL)
+		return false;
+
+	Point point;
+	Size size = GetBoardSize(board);
+	for (point.Y = 0; point.Y < size.H; point.Y++)
+	{
+		// Scan-Line 0
+		for (point.X = 0; point.X < size.W; point.X++)
+		{
+			TileRef Tile = GetTile(board, point);
+			if (Tile == NULL)
+				printf("###");
+			else 
+				printf("#%c#", Tile->Top);
+		}
+		printf("\n");
+
+		// Scan-Line 1
+		for (point.X = 0; point.X < size.W; point.X++)
+		{
+			TileRef Tile = GetTile(board, point);
+			if (Tile == NULL)
+				printf("###");
+			else
+				printf("%c%c%c", Tile->Left, Tile->Middle, Tile->Right);
+		}
+		printf("\n");
+
+		// Scan-Line 2
+		for (point.X = 0; point.X < size.W; point.X++)
+		{
+			TileRef Tile = GetTile(board, point);
+			if (Tile == NULL)
+				printf("###");
+			else
+				printf("#%c#", Tile->Bottom);
+		}
+		printf("\n");
+	}
+
+	return true;
 }

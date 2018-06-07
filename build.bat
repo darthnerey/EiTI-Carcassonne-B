@@ -1,10 +1,13 @@
 @echo off
-tcc -c user_mode.c
-tcc -c file_io.c
-tcc -c drawing.c
-tcc -c board.c
-tcc -c utils.c
-tcc -c tile.c
-tcc -c tile_pool.c
-tcc game.c user_mode.o file_io.o drawing.o board.o tile.o utils.o tile_pool.o -o game.exe
+tcc -c AI.c
+tcc -c AutoMode.c
+tcc -c Board.c
+tcc -c Drawing.c
+tcc -c FileIO.c
+tcc -c Ruleset.c
+tcc -c Tile.c
+tcc -c TilePool.c
+tcc -c UserMode.c
+tcc -c Utils.c
+tcc game.c AI.o AutoMode.o Board.o Drawing.o FileIO.o Ruleset.o Tile.o TilePool.o UserMode.o Utils.o -o game.exe
 
